@@ -65,7 +65,7 @@ function create-metadata-table($readmeFolder, $readmeName, $moniker, $msService,
   Add-Content -Path $readmePath -Value $metadataString
 
   # Add tables, seperate client and mgmt.
-  $readmeHeader = "# $langTitle - $moniker"
+  $readmeHeader = "# Azure $serviceName SDK for $languageDisplayName - $moniker"
   Add-Content -Path $readmePath -Value $readmeHeader
   Add-Content -Path $readmePath -Value $content
 }
@@ -105,10 +105,12 @@ function generate-markdown-table($readmeFolder, $readmeName, $packageInfo, $moni
   # Here is the table, the versioned value will
   foreach ($pkg in $packageInfo) {
     $repositoryLink = "$RepositoryUri"
-    if (!Test-Path "Function:$GetRepositoryLinkFn") {
+    if (!(Test-Path "Function:$GetRepositoryLinkFn")) {
       LogWarning "There is no $GetRepositoryLinkFn inplemented. Use default download link: $RepositoryUri."
     }
-    $repositoryLink = &$GetRepositoryLinkFn $pkg
+    else{
+      $repositoryLink = &$GetRepositoryLinkFn $pkg
+    }
     $packageLevelReadme = ""
     if (Test-Path "Function:$GetPackageLevelReadmeFn") {
       $packageLevelReadme = &$GetPackageLevelReadmeFn -packageMetadata $pkg
@@ -182,7 +184,7 @@ foreach($moniker in $monikers) {
   #   "ArtifactName": "azure-storage-blob",
   #   "ReleaseStatus": "2022-04-19"
   # }
-  if (!Test-Path "Function:$GetOnboardedDocsMsPackagesForMonikerFn") {
+  if (!(Test-Path "Function:$GetOnboardedDocsMsPackagesForMonikerFn")) {
     LogError "There is no $GetOnboardedDocsMsPackagesForMonikerFn inplemented. "
     exit 1
   }
