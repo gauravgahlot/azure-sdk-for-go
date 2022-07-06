@@ -104,7 +104,11 @@ function generate-markdown-table($readmeFolder, $readmeName, $packageInfo, $moni
   $tableContent = ""
   # Here is the table, the versioned value will
   foreach ($pkg in $packageInfo) {
-    $repositoryLink = $RepositoryUri
+    $repositoryLink = "$RepositoryUri"
+    if (!Test-Path "Function:$GetRepositoryLink") {
+      LogWarning "There is no $GetRepositoryLink inplemented. Use default download link: $RepositoryUri."
+    }
+    $repositoryLink = &$GetRepositoryLink $pkg
     $packageLevelReadme = ""
     if (Test-Path "Function:$GetPackageLevelReadmeFn") {
       $packageLevelReadme = &$GetPackageLevelReadmeFn -packageMetadata $pkg
@@ -178,6 +182,10 @@ foreach($moniker in $monikers) {
   #   "ArtifactName": "azure-storage-blob",
   #   "ReleaseStatus": "2022-04-19"
   # }
+  if (!Test-Path "Function:$GetOnboardedDocsMsPackagesForMonikerFn") {
+    LogError "There is no $GetOnboardedDocsMsPackagesForMonikerFn inplemented. "
+    exit 1
+  }
   $onboardedPackages = &$GetOnboardedDocsMsPackagesForMonikerFn `
     -DocRepoLocation $DocRepoLocation -moniker $moniker
   $csvMetadata = @()
