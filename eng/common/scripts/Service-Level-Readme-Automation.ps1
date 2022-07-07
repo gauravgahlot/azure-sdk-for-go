@@ -96,7 +96,7 @@ function update-metadata-table($readmeFolder, $readmeName, $serviceName, $msServ
     -msService $msService
   $null = $metadataString -match "---`n*(?<metadata>(.*`n)*)---"
   $mergedMetadata = compare-and-merge-metadata -original $orignalMetadata -updated $Matches["metadata"]
-  Set-Content -Path $readmePath -Value "---`n$mergedMetadata---`n$restContent" -NoNewline
+  Set-Content -Path $readmePath -Value "---$mergedMetadata---`n$restContent" -NoNewline
 }
 
 function generate-markdown-table($readmeFolder, $readmeName, $packageInfo, $moniker) {
