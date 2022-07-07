@@ -62,12 +62,12 @@ function create-metadata-table($readmeFolder, $readmeName, $moniker, $msService,
   $metadataString = GenerateDocsMsMetadata -language $Language -languageDisplayName $LanguageDisplayName -serviceName $serviceName `
     -tenantId $TenantId -clientId $ClientId -clientSecret $ClientSecret `
     -msService $msService
-  Add-Content -Path $readmePath -Value $metadataString
+  Add-Content -Path $readmePath -Value $metadataString -NoNewline
 
   # Add tables, seperate client and mgmt.
   $readmeHeader = "# Azure $serviceName SDK for $languageDisplayName - $moniker"
-  Add-Content -Path $readmePath -Value $readmeHeader
-  Add-Content -Path $readmePath -Value $content
+  Add-Content -Path $readmePath -Value $readmeHeader -NoNewline
+  Add-Content -Path $readmePath -Value $content -NoNewline
 }
 
 function compare-and-merge-metadata ($original, $updated) {
