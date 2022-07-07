@@ -87,14 +87,14 @@ function update-metadata-table($readmeFolder, $readmeName, $serviceName, $msServ
 {
   $readmePath = Join-Path $readmeFolder -ChildPath $readmeName
   $readmeContent = Get-Content -Path $readmePath -Raw
-  $null = $readmeContent -match "---`n*(?<metadata>(.*`n)*)---`n*(?<content>(.*`n)*)"
+  $null = $readmeContent -match "---`n*(?<metadata>(.*[^-]`n)*)---`n*(?<content>(.*`n)*)"
   $restContent = $Matches["content"]
   $orignalMetadata = $Matches["metadata"]
   # $Language, $LanguageDisplayName are the variables globally defined in Language-Settings.ps1
   $metadataString = GenerateDocsMsMetadata -language $Language -languageDisplayName $LanguageDisplayName -serviceName $serviceName `
     -tenantId $TenantId -clientId $ClientId -clientSecret $ClientSecret `
     -msService $msService
-  $null = $metadataString -match "---`n*(?<metadata>(.*`n)*)---"
+  $null = $metadataString -match "---`n*(?<metadata>(.*[^-]`n)*)---"
   $mergedMetadata = compare-and-merge-metadata -original $orignalMetadata -updated $Matches["metadata"]
   Set-Content -Path $readmePath -Value "---$mergedMetadata---`n$restContent" -NoNewline
 }
