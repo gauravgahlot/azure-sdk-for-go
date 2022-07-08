@@ -62,7 +62,7 @@ function create-metadata-table($readmeFolder, $readmeName, $moniker, $msService,
   $metadataString = GenerateDocsMsMetadata -language $Language -languageDisplayName $LanguageDisplayName -serviceName $serviceName `
     -tenantId $TenantId -clientId $ClientId -clientSecret $ClientSecret `
     -msService $msService
-  Add-Content -Path $readmePath -Value $metadataString -NoNewline
+  Add-Content -Path $readmePath -Value $metadataString
 
   # Add tables, seperate client and mgmt.
   $readmeHeader = "# Azure $serviceName SDK for $languageDisplayName - $moniker"
@@ -87,16 +87,16 @@ function update-metadata-table($readmeFolder, $readmeName, $serviceName, $msServ
 {
   $readmePath = Join-Path $readmeFolder -ChildPath $readmeName
   $readmeContent = Get-Content -Path $readmePath -Raw
-  $null = $readmeContent -match "^---`n*(?<metadata>([^-]+`n)*)---*(?<content>(.*`n)*)"
+  $null = $readmeContent -match "^---`n*(?<metadata>(((?!---).)*`n)*)---(`n)*(?<content>(.*`n)*)"
   $restContent = $Matches["content"]
   $orignalMetadata = $Matches["metadata"]
   # $Language, $LanguageDisplayName are the variables globally defined in Language-Settings.ps1
   $metadataString = GenerateDocsMsMetadata -language $Language -languageDisplayName $LanguageDisplayName -serviceName $serviceName `
     -tenantId $TenantId -clientId $ClientId -clientSecret $ClientSecret `
     -msService $msService
-  $null = $metadataString -match "^---`n*(?<metadata>([^-]+`n)*)---"
-  $mergedMetadata = compare-and-merge-metadata -original $orignalMetadata -updated $Matches["metadata"]
-  Set-Content -Path $readmePath -Value "---$mergedMetadata---`n$restContent" -NoNewline
+  $null = $metadataString -match "^---`n*(?<newMatadata>(.*`n)*)---"
+  $mergedMetadata = compare-and-merge-metadata -original $orignalMetadata -updated $Matches["newMatadata"]
+  Set-Content -Path $readmePath -Value "---`n$mergedMetadata---`n$restContent" -NoNewline
 }
 
 function generate-markdown-table($readmeFolder, $readmeName, $packageInfo, $moniker) {
