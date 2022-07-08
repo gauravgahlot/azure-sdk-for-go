@@ -104,7 +104,7 @@ function generate-markdown-table($readmeFolder, $readmeName, $packageInfo, $moni
   $tableContent = ""
   # Here is the table, the versioned value will
   foreach ($pkg in $packageInfo) {
-    $repositoryLink = "$RepositoryUri"
+    $repositoryLink = $RepositoryUri
     if (!(Test-Path "Function:$GetRepositoryLinkFn")) {
       LogWarning "There is no $GetRepositoryLinkFn inplemented. Use default download link: $RepositoryUri."
     }
